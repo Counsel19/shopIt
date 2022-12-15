@@ -4,13 +4,15 @@ import {
   getAllProduct,
   updateProduct,
   deleteProduct,
+  getSingleProduct,
 } from "../controller/productsController.js";
 import { adminAuth } from "../middlewares/auth.js";
 const router = express.Router();
 
 router.route("/").post(adminAuth, createProduct).get(getAllProduct);
 router
-  .route("/:id")
+  .route("/:productId")
+  .get(getSingleProduct)
   .put(adminAuth, updateProduct)
   .delete(adminAuth, deleteProduct);
 

@@ -2,9 +2,17 @@ import express from "express";
 const app = express();
 
 import mongoose from "mongoose";
-mongoose.set('strictQuery', false);
+mongoose.set("strictQuery", false);
 
 import "express-async-errors";
+import cors from "cors";
+
+let corsOptions = {
+  origin: "http://127.0.0.1:5173",
+  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+
+app.use(cors(corsOptions));
 
 import morgan from "morgan";
 if (process.env.NODE_ENV !== "production") {
@@ -20,6 +28,8 @@ import AuthRoute from "./routes/authRoute.js";
 import ProductRoute from "./routes/productRoute.js";
 import CategoryRoute from "./routes/categoryRoute.js";
 import CartRoute from "./routes/cartRoute.js";
+import UserRoute from "./routes/userRoute.js";
+import SavedRoute from "./routes/savedRoute.js";
 
 // middlewares
 import ErrorHandlerMiddleware from "./middlewares/ErrorHandler.js";
@@ -29,6 +39,8 @@ app.use("/api/auth/", AuthRoute);
 app.use("/api/products/", ProductRoute);
 app.use("/api/categories/", CategoryRoute);
 app.use("/api/carts/", CartRoute);
+app.use("/api/saved/", SavedRoute);
+app.use("/api/users/", UserRoute);
 
 app.use(ErrorHandlerMiddleware);
 

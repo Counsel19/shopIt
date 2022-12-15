@@ -1,16 +1,16 @@
 import express from "express";
 import {
   createCart,
-  getAllCart,
+  getUserCarts,
   updateCart,
   deleteCart,
-} from "../controller/categoriesController.js";
+} from "../controller/cartController.js";
 import { userAuth } from "../middlewares/auth.js";
 const router = express.Router();
 
-router.route("/").post(userAuth, createCart).get(getAllCart);
+router.route("/").post(userAuth, createCart).get(userAuth, getUserCarts);
 router
-  .route("/:id")
+  .route("/:cartId")
   .patch(userAuth, updateCart)
   .delete(userAuth, deleteCart);
 
