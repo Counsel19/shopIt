@@ -19,15 +19,18 @@ const createProduct = async (req, res) => {
   res.status(StatusCodes.CREATED).json(product);
 };
 const getAllProduct = async (req, res) => {
+  let queryObject = {};
 
-  let queryObject = {}
+  const { search, sort, filter } = req.query;
 
-  const { search, sort } = req.query
+  if (filter && filter !== "all") {
+    const category = await Category.findOne({ name: filter });
 
- 
+    queryObject = { ...queryObject, category: category._id };
+  }
 
-  if(search) {
-    const fieldsToSearch = [ "name", "decs",  ]
+  if (search) {
+    const fieldsToSearch = ["name", "desc"];
 
     const query = {
       $or: [
@@ -39,41 +42,37 @@ const getAllProduct = async (req, res) => {
     queryObject = { ...queryObject, ...query };
   }
 
-   
+  let result = Product.find(queryObject);
 
-  let result =  Product.find(queryObject);
+  // CHAIN SORT
+  if (sort === "latest") {
+    result = result.sort("-createdAt");
+  }
+  if (sort === "oldest") {
+    result = result.sort("createdAt");
+  }
+  if (sort === "a-z") {
+    result = result.sort("name");
+  }
+  if (sort === "z-a") {
+    result = result.sort("-name");
+  }
 
-   // CHAIN SORT
-   if(sort === "latest") {
-    result = result.sort("-createdAt")
-   }
-   if(sort === "oldest") {
-    result = result.sort("createdAt")
-   }
-   if(sort === "a-z") {
-    result = result.sort("name")
-   }
-   if(sort === "z-a") {
-    result = result.sort("-name")
-   }
- 
+  const allProducts = await result;
 
-  const allProducts = await result
   const products = await Promise.all(
     allProducts.map(async (product) => {
-      
       const category = await Category.findById(product.category);
       return {
         _id: product._id,
-        name: product.name, 
-        sellingPrice: product.sellingPrice, 
-        actualPrice: product.actualPrice, 
+        name: product.name,
+        sellingPrice: product.sellingPrice,
+        actualPrice: product.actualPrice,
         image: product.images[0],
-        category: category.name
+        category: category.name,
       };
     })
   );
-
 
   const numOfProducts = await Product.countDocuments(queryObject);
 
@@ -88,7 +87,19 @@ const getSingleProduct = async (req, res) => {
   res.status(StatusCodes.OK).json(singlePoduct);
 };
 
-const updateProduct = async (req, res) => {};
+const updateProduct = async (req, res) => {
+  const { productId } = req.params;
+
+  const updatedProduct = await Product.findOneAndUpdate(
+    { _id: productId },
+    req.body,
+    {
+      new: true,
+    }
+  );
+
+  res.status(StatusCodes.OK).json(updatedProduct);
+};
 
 const deleteProduct = async (req, res) => {};
 

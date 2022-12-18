@@ -13,7 +13,7 @@ router.route("/").post(adminAuth, createProduct).get(getAllProduct);
 router
   .route("/:productId")
   .get(getSingleProduct)
-  .put(adminAuth, updateProduct)
+  .patch(adminAuth, updateProduct)
   .delete(adminAuth, deleteProduct);
 
 export default router;
