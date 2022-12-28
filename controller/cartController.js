@@ -18,21 +18,25 @@ const createCart = async (req, res) => {
 };
 
 const getUserCarts = async (req, res) => {
-  let userCarts = await Cart.find({ createdBy: req.userInfo.userId });
-  const numOfCarts = await Cart.countDocuments({
+  let cart = await Cart.find({ createdBy: req.userInfo.userId });
+  const numOfCart = await Cart.countDocuments({
     createdBy: req.userInfo.userId,
   });
 
-  userCarts = await Promise.all(
-    userCarts.map(async (cartItem) => {
-      const { name, actualPrice, sellingPrice, category } =
+  let subTotal = 0
+
+  cart = await Promise.all(
+    cart.map(async (cartItem) => {
+      const { name, actualPrice, images, sellingPrice, category } =
         await Product.findById(cartItem.productId);
       const categoryName = await Category.findById(category);
+      subTotal = subTotal + sellingPrice * cartItem.quantity
       return {
         productInfo: {
           name,
           actualPrice,
           sellingPrice,
+          image: images[0],
           categoryName: categoryName.name,
         },
         ...cartItem._doc,
@@ -40,7 +44,7 @@ const getUserCarts = async (req, res) => {
     })
   );
 
-  res.status(StatusCodes.OK).json({ userCarts, numOfCarts });
+  res.status(StatusCodes.OK).json({ cart, numOfCart, subTotal });
 };
 const updateCart = async (req, res) => {
   const { cartId } = req.params;

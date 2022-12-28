@@ -22,9 +22,11 @@ const getAllProduct = async (req, res) => {
   let queryObject = {};
 
   const { search, sort, filter } = req.query;
+  console.log(filter, "filter")
 
   if (filter && filter !== "all") {
     const category = await Category.findOne({ name: filter });
+    console.log(category, "category")
 
     queryObject = { ...queryObject, category: category._id };
   }
