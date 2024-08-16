@@ -24,7 +24,7 @@ const userAuth = async (req, res, next) => {
 
 const adminAuth = async (req, res, next) => {
   const authHeader = req.headers.authorization;
-
+  console.log(req.headers, "authHeader")
   req.userInfo = verifyJWT(authHeader);
   if (!req.userInfo.isAdmin) {
     throw new UnAuthorizedError("You are not an administrator");
