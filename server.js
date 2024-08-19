@@ -20,8 +20,8 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 import connectDb from "./db/connect.js";
-// import dotenv from "dotenv";
-// dotenv.config();
+import dotenv from "dotenv";
+dotenv.config();
 
 // Routes
 import AuthRoute from "./routes/authRoute.js";
