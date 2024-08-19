@@ -32,7 +32,7 @@ import UserRoute from "./routes/userRoute.js";
 import SavedRoute from "./routes/savedRoute.js";
 
 // middlewares
-import ErrorHandlerMiddleware from "./middlewares/ErrorHandler.js";
+import ErrorHandlerMiddleware from "./middlewares/Errorhandler.js";
 app.use(express.json());
 
 app.use("/api/auth/", AuthRoute);
